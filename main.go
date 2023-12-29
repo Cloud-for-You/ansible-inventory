@@ -17,6 +17,8 @@ func main() {
 
 	// Inicializace inventory
   jsonInventory := ansible.JSONInventory{}
+	// Inicializace mapy pro hostvars
+	jsonInventory.Meta.HostVars = make(map[string]ansible.HostVars)
 	jsonInventory.All.Children = append(jsonInventory.All.Children, "ungrouped")
 	
 	// Vsechny ziskane hosty z backendu ulozime do inventory
@@ -24,7 +26,10 @@ func main() {
 		// Vlozeni do skupiny ungrouped
 		jsonInventory.Ungrouped.Hosts = append(jsonInventory.Ungrouped.Hosts, host.Name)
 		// Definujeme potrebne hostvars pro pripojenik hostu
-		
+		jsonInventory.Meta.HostVars[host.Name] = ansible.HostVars{
+			AnsibleHost: host.IPv4[0],
+		}
+
 	}
 
   // Vypiseme inventory na stdout
