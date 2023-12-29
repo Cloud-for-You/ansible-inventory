@@ -1,27 +1,36 @@
 package multipass
 
 import (
+	"encoding/json"
 	"fmt"
 	"os/exec"
-	"strings"
 )
 
-func GetHosts() ([]string, error) {
-	cmd := exec.Command("multipass", "list")
-	output, err := cmd.CombinedOutput()
+type MultipassHost struct {
+	Name					string			`json:"name"`
+	Release				string			`json:"release"`
+	State					string			`json:"state"`
+	IPv4					[]string		`json:"ipv4"`
+
+}
+
+type MultipassHostList struct {
+  List					[]MultipassHost			`json:"list"`
+}
+
+func GetHosts() ([]MultipassHost, error) {
+	cmd := exec.Command("multipass", "list", "--format", "json")
+	stdout, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, fmt.Errorf("Chyba při spouštění příkazu Multipass: %v", err)
 	}
 
 	// Zpracování výstupu a získání jmen serverů
-	var hosts []string
-	lines := strings.Split(string(output), "\n")
-	for _, line := range lines[2:] {
-		fields := strings.Fields(line)
-		if len(fields) > 0 {
-			hosts = append(hosts, fields[0])
-		}
+	var hostList MultipassHostList
+	err = json.Unmarshal(stdout, &hostList)
+	if err != nil {
+		return nil, fmt.Errorf("Chyba při dekódování JSON: %v", err)
 	}
 
-	return hosts, nil
+	return hostList.List, nil
 }

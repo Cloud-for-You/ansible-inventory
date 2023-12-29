@@ -1,16 +1,38 @@
 package main
 
 import (
+	ansible "Cloud-for-You/ansible-inventory/api"
 	multipass "Cloud-for-You/ansible-inventory/backends"
+	"encoding/json"
 	"fmt"
 )
 
 func main() {
+	// Ziskame vsechny hosty z backendu
 	hosts, err := multipass.GetHosts()
 	if err != nil {
 		fmt.Println("ERROR:", err)
 		return
 	}
 
-	fmt.Println(hosts)
+	// Inicializace inventory
+  jsonInventory := ansible.JSONInventory{}
+	jsonInventory.All.Children = append(jsonInventory.All.Children, "ungrouped")
+	
+	// Vsechny ziskane hosty z backendu ulozime do inventory
+	for _, host := range hosts {
+		// Vlozeni do skupiny ungrouped
+		jsonInventory.Ungrouped.Hosts = append(jsonInventory.Ungrouped.Hosts, host.Name)
+		// Definujeme potrebne hostvars pro pripojenik hostu
+		
+	}
+
+  // Vypiseme inventory na stdout
+	inventoryData, err := json.MarshalIndent(jsonInventory, "", " ")
+	if err != nil {
+		fmt.Println("Error encoding JSON:", err)
+		return
+	}
+
+	fmt.Println(string(inventoryData))
 }
