@@ -6,19 +6,18 @@ import (
 	"os/exec"
 )
 
-type MultipassHost struct {
+type Host struct {
 	Name					string			`json:"name"`
 	Release				string			`json:"release"`
 	State					string			`json:"state"`
 	IPv4					[]string		`json:"ipv4"`
-
 }
 
-type MultipassHostList struct {
-  List					[]MultipassHost			`json:"list"`
+type HostList struct {
+  List					[]Host			`json:"list"`
 }
 
-func GetHosts() ([]MultipassHost, error) {
+func GetHosts() ([]Host, error) {
 	cmd := exec.Command("multipass", "list", "--format", "json")
 	stdout, err := cmd.CombinedOutput()
 	if err != nil {
@@ -26,7 +25,7 @@ func GetHosts() ([]MultipassHost, error) {
 	}
 
 	// Zpracování výstupu a získání jmen serverů
-	var hostList MultipassHostList
+	var hostList HostList
 	err = json.Unmarshal(stdout, &hostList)
 	if err != nil {
 		return nil, fmt.Errorf("Chyba při dekódování JSON: %v", err)
