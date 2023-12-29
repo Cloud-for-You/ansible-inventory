@@ -2,7 +2,7 @@ package main
 
 import (
 	ansible "Cloud-for-You/ansible-inventory/api"
-	multipass "Cloud-for-You/ansible-inventory/backends"
+	multipass "Cloud-for-You/ansible-inventory/backends/multipass"
 	"encoding/json"
 	"fmt"
 )
@@ -29,7 +29,6 @@ func main() {
 		jsonInventory.Meta.HostVars[host.Name] = ansible.HostVars{
 			AnsibleHost: host.IPv4[0],
 		}
-
 	}
 
   // Vypiseme inventory na stdout
