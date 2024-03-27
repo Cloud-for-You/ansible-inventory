@@ -2,14 +2,14 @@ package main
 
 import (
 	ansible "Cloud-for-You/ansible-inventory/api"
-	hosts "Cloud-for-You/ansible-inventory/backends/hosts"
+	backend "Cloud-for-You/ansible-inventory/backends/hosts"
 	"encoding/json"
 	"fmt"
 )
 
 func main() {
 	// Ziskame vsechny hosty z backendu
-	hosts, err := hosts.GetHosts("./examples/hosts1")
+	hosts, err := backend.GetHosts("./examples/hosts1")
 	if err != nil {
 		fmt.Println("ERROR:", err)
 		return

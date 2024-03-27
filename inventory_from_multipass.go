@@ -2,14 +2,14 @@ package main
 
 import (
 	ansible "Cloud-for-You/ansible-inventory/api"
-	multipass "Cloud-for-You/ansible-inventory/backends/multipass"
+	backend "Cloud-for-You/ansible-inventory/backends/multipass"
 	"encoding/json"
 	"fmt"
 )
 
 func main() {
 	// Ziskame vsechny hosty z backendu
-	hosts, err := multipass.GetHosts()
+	hosts, err := backend.GetHosts()
 	if err != nil {
 		fmt.Println("ERROR:", err)
 		return
